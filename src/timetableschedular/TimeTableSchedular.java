@@ -42,15 +42,21 @@ public class TimeTableSchedular {
         String[] Teachers = t.getTeachers(subjects);    //... get teachers
         
         t.assignLoads(Teachers,slots);
-        
-        System.out.println("Verify loads for all the faculties, perform changes if any, save and type 'Done' when ready");
+        String path = "C:\\Users\\Divyalaptus\\Documents\\NetBeansProjects\\TimeTableSchedular";
+        System.out.println("\nVerify loads for all the faculties at "+path);
         scan.nextLine();
-        String proceed = scan.nextLine();
+        
+        Boolean a = false;
+        while(a==false){
+            System.out.println("\n\nPerform changes if any, SAVE, return and type 'Done' when ready...");
+            String proceed = scan.nextLine();
         if(proceed.equalsIgnoreCase("done")){
             t.getUpdatedLoads(Teachers,slots);
-        
+            a=true;
         }
-        
+        else
+            a=false;
+        }
     }
     
     void assignLoads(String[] faculty, int slots){
@@ -80,7 +86,7 @@ public class TimeTableSchedular {
                         case 4:bw.write("Fri\t");
                     }
                     for(int b = 0; b < slots; b++){
-                        bw.write("1\t");
+                        bw.write("0\t");    //... the teachers are by-default free at this slot
                     }
                     bw.newLine();
                 }
@@ -131,7 +137,7 @@ public class TimeTableSchedular {
         }
         int length = 0;
         for(int i = 0; i < setOfTeachers.length; i++){  //... counts number of teachers
-            String[] s = setOfTeachers[i].split("\\,");
+            String[] s = setOfTeachers[i].split("\\,+");
             length = length + s.length;
         
         }
@@ -154,18 +160,30 @@ public class TimeTableSchedular {
     void getUpdatedLoads(String[] Teacher, int slots){
         String[][] TeacherLoad = new String[Teacher.length*5][slots];
         try{
+            int j=0;
         for(int i = 0; i < Teacher.length; i++){
                 String[] l = Teacher[i].split("\\:");
                 String filename = l[0]+"("+l[1]+")"+".txt";
                 System.out.println(filename);
                 BufferedReader br = new BufferedReader(new FileReader(filename));
                 String read=null;
+                br.readLine();  //... ignores the slot number from each file
                 while((read=br.readLine())!=null){
-                    
-                    
+                    String loads[] = read.split("\\s+");
+                    for(int k=0;k<slots;k++){
+                    TeacherLoad[j][k]=loads[k+1];
+                    }
+                    j++;
                 }
-                
-        }}catch(IOException e){}
-            
+        br.close();
+        }
+        
+        }catch(IOException e){}
+            for(int i=0;i<TeacherLoad.length;i++){
+            for(int j=0;j<slots;j++){
+            System.out.print(TeacherLoad[i][j]+" ");
+            }
+            System.out.println();
+            }
     }
 }

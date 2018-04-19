@@ -38,7 +38,7 @@ public class TimeTableSchedular {
         System.out.println("Enter the name of Subjects: ");
         String[] subjects = t.getSubjects(noOfSubjects);    //... get subject names
         
-        System.out.println("Enter name of Teachers for each subject( delimited with , ):");
+        System.out.println("Enter name of Teachers for each subject for each section( delimited with , ):");
         String[] Teachers = t.getTeachers(subjects);    //... get teachers
         
         t.assignLoads(Teachers,slots);
@@ -46,17 +46,21 @@ public class TimeTableSchedular {
         System.out.println("\nVerify loads for all the faculties at "+path);
         scan.nextLine();
         
+        String[][]freeTeachers = new String[Teachers.length*5][slots];
+        
         Boolean a = false;
         while(a==false){
             System.out.println("\n\nPerform changes if any, SAVE, return and type 'Done' when ready...");
             String proceed = scan.nextLine();
         if(proceed.equalsIgnoreCase("done")){
-            t.getUpdatedLoads(Teachers,slots);
+            freeTeachers = t.getUpdatedLoads(Teachers,slots); //... This array stores the updated timetable of the teachers
             a=true;
         }
         else
             a=false;
         }
+        
+        t.getTeacherOccupancy(freeTeachers);
     }
     
     void assignLoads(String[] faculty, int slots){
@@ -157,7 +161,7 @@ public class TimeTableSchedular {
       return subjectAllocation;
     }
     
-    void getUpdatedLoads(String[] Teacher, int slots){
+    String[][] getUpdatedLoads(String[] Teacher, int slots){
         String[][] TeacherLoad = new String[Teacher.length*5][slots];
         try{
             int j=0;
@@ -179,11 +183,13 @@ public class TimeTableSchedular {
         }
         
         }catch(IOException e){}
-            for(int i=0;i<TeacherLoad.length;i++){
+            /*for(int i=0;i<TeacherLoad.length;i++){
             for(int j=0;j<slots;j++){
             System.out.print(TeacherLoad[i][j]+" ");
             }
             System.out.println();
-            }
+            }*/
+            return TeacherLoad;
     }
+    void getTeacherOccupancy(String[][] freeTeachers){}
 }
